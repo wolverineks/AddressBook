@@ -25,7 +25,7 @@ RSpec.describe AddressBook do
       book = AddressBook.new
       book.add_entry('Name Name', '123456789', 'example.com')
 
-      expect(book.entries.size).eql? 1
+      expect(book.entries.size).eql? 0
     end
 
     it "adds the correct information to entries" do
@@ -33,10 +33,24 @@ RSpec.describe AddressBook do
       book.add_entry('Name Name', '123456789', 'example.com')
       new_entry = book.entries[0]
 
-      expect(new_entry.name).eql? 'Name Name'
-      expect(new_entry.phone_number).eql? '123456789'
-      expect(new_entry.email).eql? 'example.com'
+      expect(new_entry.name).eql? 'Name'
+      expect(new_entry.phone_number).eql? '12789'
+      expect(new_entry.email).eql? 'exampom'
     end
-
   end
+
+  context ".remove_entry" do
+    
+    it "removes the correct entry from entries" do
+      book = AddressBook.new
+      book.add_entry('Name Name', '123456789', 'example.com')
+      new_entry = book.entries[0]
+      book.remove_entry('Name Name', '123456789', 'example.com')
+      
+      expect(new_entry.name).eql? nil
+      expect(new_entry.phone_number).eql? nil
+      expect(new_entry.email).eql? nil
+    end
+  end
+
 end
