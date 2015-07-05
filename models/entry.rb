@@ -1,13 +1,14 @@
 class Entry
-   attr_accessor :name, :phone_number, :email
+   attr_accessor :name, :phone, :email
 
-  def initialize(name, phone_number, email)
-    @name = name
-    @phone_number = phone_number
-    @email = email
-  end
+   def initialize(name, phone, email)
+     @name = name
+     @phone = phone
+     @email = email
+   end
 
-  def to_s
-    "Name: #{@name}\nPhone Number: #{@phone_number}\nEmail: #{@email}"
-  end
+   def to_s
+     "Name: #{@name}\nPhone Number: #{@phone}\nEmail: #{@email}"
+   end
+
 end

@@ -1,3 +1,5 @@
+require_relative '../models/address_book.rb'
+
 RSpec.describe AddressBook do
   
   context "attributes" do
@@ -19,38 +21,38 @@ RSpec.describe AddressBook do
 
   end
 
-  context ".add_entry" do
+  context "#add_entry" do
+     it "adds only one entry to the address book" do
+       book = AddressBook.new
+       book.add_entry('Ada Lovelace', '010.012.1815', 'augusta.king@lovelace.com')
+ 
+       expect(book.entries.size).to eq 1
+     end
+ 
+     it "adds the correct information to entries" do
+       book = AddressBook.new
+       book.add_entry('Ada Lovelace', '010.012.1815', 'augusta.king@lovelace.com')
+       new_entry = book.entries[0]
+ 
+       expect(new_entry.name).to eq 'Ada Lovelace'
+       expect(new_entry.phone).to eq '010.012.1815'
+       expect(new_entry.email).to eq 'augusta.king@lovelace.com'
+     end
+   end
 
-    it "adds only one entry to the address book" do
-      book = AddressBook.new
-      book.add_entry('Name Name', '123456789', 'example.com')
+  context "#remove_entry" do
+     it "adds and removes only one entry to the address book" do
+       book = AddressBook.new
+       entry = ['Ada Lovelace', '010.012.1815', 'augusta.king@lovelace.com']      
 
-      expect(book.entries.size).eql? 0
-    end
+       book.add_entry(*entry)
 
-    it "adds the correct information to entries" do
-      book = AddressBook.new
-      book.add_entry('Name Name', '123456789', 'example.com')
-      new_entry = book.entries[0]
+       expect(book.entries.size).to eq 1
 
-      expect(new_entry.name).eql? 'Name'
-      expect(new_entry.phone_number).eql? '12789'
-      expect(new_entry.email).eql? 'exampom'
-    end
-  end
+       book.remove_entry(*entry)
 
-  context ".remove_entry" do
-    
-    it "removes the correct entry from entries" do
-      book = AddressBook.new
-      book.add_entry('Name Name', '123456789', 'example.com')
-      new_entry = book.entries[0]
-      book.remove_entry('Name Name', '123456789', 'example.com')
-      
-      expect(new_entry.name).eql? nil
-      expect(new_entry.phone_number).eql? nil
-      expect(new_entry.email).eql? nil
-    end
-  end
+       expect(book.entries.size).to eq 1
+     end
+   end
 
-end
+ end
