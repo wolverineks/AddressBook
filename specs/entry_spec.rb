@@ -10,9 +10,9 @@ require_relative '../models/entry.rb'
        expect(entry).to respond_to(:name)
      end
  
-     it "should respond to phone number" do
+     it "should respond to phone" do
        entry = Entry.new('Ada Lovelace', '010.012.1815', 'augusta.king@lovelace.com')
-       expect(entry).to respond_to(:phone_number)
+       expect(entry).to respond_to(:phone)
      end
  
      it "should respond to email" do
