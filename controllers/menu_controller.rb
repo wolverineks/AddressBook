@@ -103,7 +103,7 @@ class MenuController
       else
         system "clear"
         puts "#{selection} is not a valid input"
-        search_entries
+        search_entries_menu
     end
   end
 ####################################################################
