@@ -8,51 +8,126 @@ class MenuController
   end
 ####################################################################
   def main_menu
+    options = {
+      1 => :view_all_entries,
+      2 => :view_entry,
+      3 => :create_entry,
+      4 => :search_entries_menu,
+      5 => :read_csv,
+      6 => :detonate,
+      7 => :exit
+    }
+
     puts "Main Menu - #{@address_book.entries.count} entries"
-    puts "1 - View all entries"
-    puts "2 - View Entry Number n"
-    puts "3 - Create an entry"
-    puts "4 - Search for an entry"
-    puts "5 - Import entries from a CSV"
-    puts "6 - Detonate!"
-    puts "7 - Exit"
+
+    options.each do |option|
+      puts "#{option[0]} - #{option[1].to_s.gsub(/_/, " ").split.map(&:capitalize).join(" ")}"
+    end
+
     print "Enter your selection: "
  
     selection = gets.to_i
     puts "You picked #{selection}"
 
-    case selection
-    when 1
-      system "clear"
-      view_all_entries
-      main_menu
-    when 2
-      system "clear"
-      view_entry
-      main_menu
-    when 3
-      system "clear"
-      create_entry
-      main_menu
-    when 4
-      system "clear"
-      search_entries_menu
-      main_menu
-    when 5
-      system "clear"
-      read_csv
-      main_menu    
-    when 6
-      system "clear"
-      detonate
-      main_menu
-    when 7
-      puts "Good-bye!"
-      exit(0)
+    if options.keys.include?(selection)
+      method(options[selection]).call
     else
       system "clear"
       puts "Sorry, that is not a valid input"
       main_menu
+    end
+
+  end
+####################################################################
+  def view_all_entries
+    @address_book.entries.each do |entry|
+      system "clear"
+      puts entry.to_s
+      entry_submenu(entry)
+    end
+ 
+    system "clear"
+    puts "End of entries"
+    main_menu   
+  end
+####################################################################
+  def view_entry
+    system "clear"
+    puts "Which entry?"
+
+    selection = gets.to_i
+    puts "You picked #{selection}"
+
+
+    if (selection > 0 && selection < @address_book.entries.length + 1)
+      entry = @address_book.entries[selection -1]
+      puts entry
+      puts ""
+      main_menu
+    else
+      system "clear"
+      puts "Sorry, that is not a valid input"
+      main_menu
+    end
+  end
+####################################################################
+  def create_entry
+    system "clear"
+    puts "New AddressBloc Entry"
+    print "Name: "
+    name = gets.chomp
+    print "Phone number: "
+    phone = gets.chomp
+    print "Email: "
+    email = gets.chomp
+ 
+    @address_book.add_entry(name, phone, email)
+    system "clear"
+    puts "New entry created"
+
+    main_menu
+  end
+####################################################################
+  def search_entries_menu
+    puts "b - Binary Search"
+    puts "i - Iterative Search"
+
+    print "Enter your selection: "
+
+    selection = gets.chomp
+
+    case selection
+
+      when "b"
+       system "clear"
+       binary_search
+      when "i"
+       system "clear"
+       iterative_search
+      else
+        system "clear"
+        puts "#{selection} is not a valid input"
+        search_entries_menu
+    end
+  end
+#################################################################### 
+  def read_csv
+    print "Enter CSV file to import: "
+    file_name = gets.chomp
+ 
+    if file_name.empty?
+      system "clear"
+      puts "No CSV file read"
+      main_menu
+    end
+ 
+    begin
+      entry_count = @address_book.import_from_csv(file_name).count
+      system "clear"
+      puts "#{entry_count} new entries added from #{file_name}"
+    rescue
+      puts "#{file_name} is not a valid CSV file, please enter the name of a valid CSV file"
+      read_csv
     end
   end
 ####################################################################
@@ -61,7 +136,9 @@ class MenuController
     puts "d - delete entry"
     puts "e - edit this entry"
     puts "m - return to main menu"
- 
+    
+    print "Enter your selection: "
+
     selection = gets.chomp
  
     case selection
@@ -85,29 +162,8 @@ class MenuController
     end
   end
 ####################################################################
-  def search_entries_menu
-
-    puts "b - Binary Search"
-    puts "i - Iterative Search"
-
-    selection = gets.chomp
-
-    case selection
-
-      when "b"
-       system "clear"
-       binary_search
-      when "i"
-       system "clear"
-       iterative_search
-      else
-        system "clear"
-        puts "#{selection} is not a valid input"
-        search_entries_menu
-    end
-  end
-####################################################################
   def binary_search
+    system "clear"
     puts "Enter name:"
     name = gets.chomp
 
@@ -123,6 +179,7 @@ class MenuController
   end
 ####################################################################
   def iterative_search
+    system "clear"
     puts "Enter name:"
     name = gets.chomp
   
@@ -145,68 +202,23 @@ class MenuController
     selection = gets.chomp
  
     case selection
-    when "d"
-      system "clear"
-      delete_entry(entry)
-      main_menu
-    when "e"
-      edit_entry(entry)
-      system "clear"
-      main_menu
-    when "m"
-      system "clear"
-      main_menu
-    else
-      system "clear"
-      puts "#{selection} is not a valid input"
-      puts entry.to_s
-      search_submenu(entry)
+      when "d"
+        system "clear"
+        delete_entry(entry)
+        main_menu
+      when "e"
+        edit_entry(entry)
+        system "clear"
+        main_menu
+      when "m"
+        system "clear"
+        main_menu
+      else
+        system "clear"
+        puts "#{selection} is not a valid input"
+        puts entry.to_s
+        search_submenu(entry)
     end
-  end
-####################################################################
-  def view_all_entries
-    @address_book.entries.each do |entry|
-      system "clear"
-      puts entry.to_s
-      entry_submenu(entry)
-    end
- 
-    system "clear"
-    puts "End of entries"   
-  end
-####################################################################
-  def view_entry
-    system "clear"
-    puts "Which entry?"
-
-    selection = gets.to_i
-    puts "You picked #{selection}"
-
-
-    if (selection > 0 && selection < @address_book.entries.length + 1)
-      puts @address_book.entries[selection -1]
-      main_menu
-    else
-      system "clear"
-      puts "Sorry, that is not a valid input"
-      main_menu
-    end
-  end
-####################################################################
-  def create_entry
-    system "clear"
-    puts "New AddressBloc Entry"
-    print "Name: "
-    name = gets.chomp
-    print "Phone number: "
-    phone = gets.chomp
-    print "Email: "
-    email = gets.chomp
- 
-    @address_book.add_entry(name, phone, email)
- 
-    system "clear"
-    puts "New entry created"
   end
 ####################################################################
   def edit_entry(entry)
@@ -231,30 +243,25 @@ class MenuController
     @address_book.entries.delete(entry)
     puts "#{entry.name} has been deleted"
   end
-#################################################################### 
-  def read_csv
+####################################################################
+  def detonate
+    print "Are you sure you want to delete all entries? (Type DETONATE! to continue): "
 
-    print "Enter CSV file to import: "
-    file_name = gets.chomp
- 
-    if file_name.empty?
-      system "clear"
-      puts "No CSV file read"
+    selection = gets.chomp
+    
+    if selection == "DETONATE!"
+      @address_book.entries.delete_if {true}
+      puts "All addresses deleted"
       main_menu
-    end
- 
-    begin
-      entry_count = @address_book.import_from_csv(file_name).count
-      system "clear"
-      puts "#{entry_count} new entries added from #{file_name}"
-    rescue
-      puts "#{file_name} is not a valid CSV file, please enter the name of a valid CSV file"
-      read_csv
+    else
+      main_menu
     end
   end
 ####################################################################
-  def detonate
-    @address_book.entries.delete_if {true}
+  def exit
+    system "clear"
+    puts "Good-bye!"
+    system "exit"
   end
 
 end

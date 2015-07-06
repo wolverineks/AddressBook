@@ -35,27 +35,19 @@ class AddressBook
     end
   end
 
-# Search AddressBook.entries for a specific entry by name
-  def binary_search(name)
+  # Search AddressBook.entries for a specific entry by name
+  def binary_search(name, list=nil)
+    list ||= entries
+    
+    return nil if list.empty?
+    entry = list[list.length/2]
+    return entry if entry.name == name
 
-    lower = 0
-    upper = entries.length - 1
-
-    while lower <= upper
-
-      mid = (lower + upper) / 2
-      mid_name = entries[mid].name
- 
-      if name == mid_name
-        return entries[mid]
-      elsif name < mid_name
-        upper = mid - 1
-      elsif name > mid_name
-        lower = mid + 1
-      end
+    if entry.name > name
+      return binary_search(name, list[0,list.length/2])
+    else
+      return binary_search(name, list[list.length/2 + 1, list.length])
     end
-
-    return nil
   end
 
   def iterative_search(name)
